@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1772369448608,
+      "tag": "0000_bright_psynapse",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1772369602965,
+      "tag": "0001_conscious_shen",
+      "breakpoints": true
+    }
+  ]
+}
