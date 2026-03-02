@@ -1,16 +1,5 @@
 
-export type Page = 'home' | 'products' | 'cart' | 'login' | 'dashboard' | 'vipLogin' | 'vipDashboard' | 'wishlist' | 'showroom' | 'productDetail' | 'privacy' | 'terms';
-
-export type User = {
-  type: 'admin';
-  email: string;
-} | {
-  type: 'vip';
-  phone: string;
-  name: string;
-};
-
-export type CategoryKey = 'fruits' | 'vegetables' | 'dates' | 'eggs' | 'organic' | 'seasonal' | 'herbs';
+export type Page = 'home' | 'products' | 'cart' | 'login' | 'dashboard' | 'vipLogin' | 'vipDashboard' | 'wishlist' | 'showroom' | 'productDetail' | 'operations' | 'warehouse' | 'privacy' | 'security_setup' | 'trackOrder' | 'dev_console' | 'trust_center' | 'sourcing' | 'terms' | 'returns' | 'driverDashboard';
 
 export interface Product {
   id: number;
@@ -18,47 +7,47 @@ export interface Product {
   name_en: string;
   category: CategoryKey;
   price: number;
-  original_price?: number;
   image: string;
-  unit_ar: string; 
+  unit_ar: string;
   unit_en: string;
+  description_ar?: string;
+  description_en?: string;
+  features_ar?: string; 
+  features_en?: string;
+  origin_ar?: string;
+  origin_en?: string;
   stock_quantity: number;
+  min_threshold: number;
+  gallery?: string[];
+}
+
+export interface User {
+  type: UserRole;
+  email?: string;
+  phone?: string;
+  name?: string;
+  creditLimit?: number;
+  currentBalance?: number;
 }
 
 export interface CartItem extends Product {
   quantity: number;
 }
 
-export interface Review {
-  id: string;
-  productId: number;
-  author: string;
-  rating: number; // 1 to 5
-  comment: string;
-  date: string;
+export type UserRole = 'admin' | 'ops' | 'developer' | 'gm' | 'vip';
+// تحديث قائمة الأقسام لتشمل كافة تصنيفات العميل
+export type CategoryKey = 'fruits' | 'vegetables' | 'herbs' | 'qassim' | 'dates' | 'packages' | 'seasonal' | 'nuts' | 'flowers' | 'custom';
+
+export interface CategoryConfig {
+  key: CategoryKey;
+  label_ar: string;
+  label_en: string;
+  icon: string;
+  order: number;
+  isVisible: boolean;
 }
 
-export interface ChatMessage {
-  role: 'user' | 'model';
-  text: string;
-}
-
-export interface ShowroomItem {
-  id: string;
-  title_ar: string;
-  title_en: string;
-  description_ar: string;
-  description_en: string;
-  image: string;
-  videoUrl?: string;
-  link?: string;
-  linkText_ar?: string;
-  linkText_en?: string;
-  section_ar?: string;
-  section_en?: string;
-}
-
-export interface VipOrderItem {
+export interface InvoiceItem {
   productId: number;
   name_ar: string;
   name_en: string;
@@ -66,38 +55,42 @@ export interface VipOrderItem {
   price: number;
 }
 
-export interface VipOrder {
-  id: string;
-  clientId: string; // Phone number of the VIP client
-  date: string;
-  status: 'تم التوصيل' | 'قيد التجهيز' | 'ملغي';
-  status_en: 'Delivered' | 'Processing' | 'Cancelled';
-  total: number;
-  items: VipOrderItem[];
-}
-
-export interface Shipment {
-  id: string;
-  supplier: string;
-  eta: string;
-  status: 'In Transit' | 'Delayed' | 'Arrived';
-  status_ar: 'قيد الشحن' | 'متأخر' | 'وصل';
-}
-
 export interface Invoice {
-  id: string; // e.g. INV-DS-1024
-  orderId: string;
-  clientId: string; // Phone number of VIP
-  customerName: string; // Company Name
+  id: string;
+  orderId?: string;
+  clientId?: string;
+  customerName: string;
   date: string;
-  dueDate: string;
-  items: VipOrderItem[];
+  dueDate?: string;
+  items: InvoiceItem[];
   subtotal: number;
-  shipping: number;
-  tax: number; // e.g. 15% VAT
+  shipping?: number;
+  tax?: number;
   total: number;
-  status: 'Paid' | 'Pending Payment' | 'Pending Confirmation' | 'Overdue';
-  status_ar: 'مدفوع' | 'بانتظار الدفع' | 'بانتظار التأكيد' | 'متأخر';
+  status: string;
+  status_ar: string;
+  type: 'Sales' | 'Purchase';
+}
+
+export interface VipClient {
+  id: string;
+  phone: string;
+  companyName: string;
+  contactPerson: string;
+  shippingAddress: string;
+  creditLimit: number;
+  currentBalance: number;
+}
+
+export interface VipTransaction {
+  id: string;
+  clientId: string;
+  date: string;
+  description_ar: string;
+  description_en: string;
+  debit: number;
+  credit: number;
+  balance: number;
 }
 
 export interface Payment {
@@ -106,71 +99,82 @@ export interface Payment {
   clientId: string;
   date: string;
   amount: number;
-  method: 'Bank Transfer' | 'Cash' | 'Card' | 'Unknown';
-  method_ar: 'تحويل بنكي' | 'نقداً' | 'بطاقة' | 'غير معروف';
-  status: 'Confirmed' | 'Pending';
+  method: string;
+  method_ar: string;
+  status: string;
 }
 
-export interface Offer {
+export interface ShowroomAsset {
   id: string;
+  type: 'video' | 'image';
+  url: string;
+  title_ar?: string;
+  title_en?: string;
+}
+
+export interface ShowroomItem {
+  id: number;
   title_ar: string;
   title_en: string;
   description_ar: string;
   description_en: string;
-  type: 'percentage' | 'fixed';
-  value: number;
-  status: 'active' | 'inactive';
+  image: string;
+  section_ar: string;
+  section_en: string;
+  assets: ShowroomAsset[];
 }
 
-export interface Warehouse {
-    id: string;
-    name: string;
-    location: string;
-    capacity: number;
+export interface Review {
+  id: string;
+  productId: number;
+  author: string;
+  rating: number;
+  comment: string;
+  date: string;
 }
 
-export interface Supplier {
-    id: string;
-    name: string;
-    contact: string;
-    country: string;
-    rating: number;
-}
-
-export interface TeamMember {
+export interface DeliveryAgent {
   id: string;
   name: string;
-  role: string;
-  role_ar: string;
-  performance: number; // a score out of 100
-}
-
-export interface ActivityLog {
-  id: string;
-  timestamp: string;
-  user: string;
-  action_ar: string;
-  action_en: string;
-  details?: string;
-}
-
-export interface VipClient {
-  id: string; // Corresponds to phone number
   phone: string;
-  companyName: string;
-  contactPerson: string;
-  shippingAddress: string;
+  vehicle_type: 'truck' | 'car';
+  status: 'delivering' | 'online' | 'offline';
+  rating: number;
+  completed_orders: number;
+  location: { lat: number; lng: number };
 }
 
-export interface VipTransaction {
-    id: string;
-    clientId: string; // Phone number of the VIP client
-    date: string;
-    description_ar: string;
-    description_en: string;
-    debit: number; // مدين (عليه)
-    credit: number; // دائن (له)
-    balance: number;
+export interface ShipmentStatus {
+  status: 'ordered' | 'processed' | 'shipped' | 'out_for_delivery' | 'delivered';
+  timestamp: string;
+  location_name_ar: string;
+  location_name_en: string;
+  note_ar?: string;
+  note_en?: string;
+}
+
+export interface Shipment {
+  id: string;
+  orderId: string;
+  agent: DeliveryAgent;
+  currentStatus: ShipmentStatus['status'];
+  history: ShipmentStatus[];
+  estimatedDelivery: string;
+}
+
+export interface StockMovement {
+  id: string;
+  productId: number;
+  type: 'IN' | 'OUT';
+  quantity: number;
+  reason: string;
+  date: string;
+  user: string;
+}
+
+export interface ChatMessage {
+  role: 'user' | 'model';
+  text: string;
 }
 
 export type ToastType = 'success' | 'error' | 'info';
@@ -181,44 +185,24 @@ export interface ToastMessage {
   type: ToastType;
 }
 
-// --- NEW TYPES FOR SETTINGS ---
-
-export interface SocialLinks {
-    facebook: string;
-    instagram: string;
-    telegram: string;
-    youtube: string;
-    snapchat: string;
-    tiktok: string;
-    whatsapp: string; // Full URL or number
-    linktree: string;
+export interface Promotion {
+  id: number;
+  title_ar: string;
+  title_en: string;
+  image: string;
+  type: string;
+  isActive: boolean;
+  description_ar?: string;
+  description_en?: string;
 }
 
-export interface CompanySettings {
-    name: string;
-    slogan_ar: string;
-    slogan_en: string;
-    phone: string;
-    whatsappNumber: string; // Number only
-    email: string;
-    address_ar: string;
-    address_en: string;
-    map_url: string;
-    logoUrl: string;
-    heroImage: string;
-    showroomBanner: string;
-    primaryColor: string;
-    fontFamily: string;
-}
+export type HomeSectionType = 'hero' | 'categories' | 'partners' | 'trust' | 'channels';
 
-export interface AppSettings {
-    company: CompanySettings;
-    social: SocialLinks;
-}
-
-export interface Song {
-  title: string;
-  artist: string;
-  url: string;
-  cover: string;
+export interface HomeSection {
+  id: string;
+  type: HomeSectionType;
+  title_ar: string;
+  title_en: string;
+  isVisible: boolean;
+  order: number;
 }
